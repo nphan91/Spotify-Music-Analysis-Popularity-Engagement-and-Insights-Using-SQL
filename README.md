@@ -1,5 +1,5 @@
 # Spotify Music Analysis: Popularity Engagement and Insights Using SQL
-![Spotify Logo]
+![Spotify Logo](https://github.com/nphan91/Spotify-Music-Analysis-Popularity-Engagement-and-Insights-Using-SQL/blob/main/Spotify%20Logo.png)
 ## SQL Queries
 # Overview and Purpose
 # 1. Analyzing Popular Tracks
