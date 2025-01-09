@@ -48,9 +48,9 @@ FROM  [dbo]. [spotify]
 -	Query: Get the total number of comments for tracks where licensed = TRUE.
 -	Purpose: Measure engagement on licensed tracks to assess audience interaction and licensing performance.
 ```sql
-SELECT SUM([comments]) AS ‘Total_comments’
+SELECT COUNT([Comments]) AS 'Total_comments'
 FROM  [dbo]. [spotify]
-WHERE [licensed] = ‘true’;
+WHERE [licensed] = 'TRUE';
 ```
 # 4. Identifying Singles
 -	Query: Find all tracks that belong to the album type "single."
@@ -58,13 +58,13 @@ WHERE [licensed] = ‘true’;
 ```sql
 SELECT  *
 FROM  [dbo]. [spotify]
-WHERE [album_type] ILIKE ‘single’;
+WHERE [album_type] LIKE 'single';
 ```
 # 5. Artist Contribution Analysis
 -	Query: Count the total number of tracks by each artist.
 -	Purpose: Understand artist productivity and catalog size for insights into their contribution to the platform.
 ```sql
-SELECT  [artist], COUNT([track]) AS ‘Total_number_of_tracks’
+SELECT  [artist], COUNT([Track]) AS 'Total_number_of_tracks'
 FROM  [dbo]. [spotify]
 GROUP BY  [artist];
 ```
@@ -74,22 +74,22 @@ GROUP BY  [artist];
 ```sql
 SELECT  
 	[album],
-	AVG ([danceability]) AS ‘Avg_danceability’
+	AVG ([danceability]) AS 'Avg_danceability'
 FROM  [dbo]. [spotify]
 GROUP BY  [album]
 ORDER BY AVG([danceability]) DESC;
+
 ```
 # 7. Most Energetic Tracks
 -	Query: Find the top 5 tracks with the highest energy values.
 -	Purpose: Highlight high-energy tracks for playlists, promotions, or workout-related content.
 ```sql
-SELECT  
+SELECT TOP 5
 	[track],
-	MAX ([energy])
+	MAX ([energy]) AS 'Max_energy'
 FROM  [dbo]. [spotify]
 GROUP BY  [track]
-ORDER BY MAX ([energy]) DESC
-LIMIT 5;
+ORDER BY MAX ([energy]) DESC;
 ```
 # 8. Official Video Engagement
 -	Query: List all tracks along with their views and likes where official_video = TRUE.
@@ -97,40 +97,40 @@ LIMIT 5;
 ```sql
 SELECT  
 	[track],
-	SUM([views]) AS ‘total_views’, 
-SUM([likes]) AS ‘total_likes’
+	SUM([views]) AS 'total_views', 
+	SUM([likes]) AS 'total_likes'
 FROM  [dbo]. [spotify]
-WHERE [official_video = ‘true’
+WHERE [official_video] LIKE 'TRUE'
 GROUP BY  [track]
-ORDER BY SUM([views]) AS ‘total_views’ DESC
-LIMIT 5;
+ORDER BY SUM([views]) DESC;
 ```
 # 9. Aggregated Album Views
 -	Query: For each album, calculate the total views of all associated tracks.
 -	Purpose: Measure overall album popularity by aggregating track-level views.
 ```sql
 SELECT  
-	[album],
-	[track],
-	SUM([views]) AS ‘total_views’, 
+	[Album],
+	[Track],
+	SUM([Views]) AS 'total_views' 
 FROM  [dbo]. [spotify]
-GROUP BY [album], [track]
-ORDER BY SUM([views]) AS ‘total_views’ DESC
+GROUP BY [Album], [Track]
+ORDER BY SUM([Views]) DESC;
 ```
 # 10. Platform Preference Analysis
 -	Query: Retrieve the track names that have been streamed on Spotify more than YouTube.
 -	Purpose: Compare platform-specific streaming performance to guide marketing and distribution strategies.
 ```sql
-SELECT  
-   	[ track],
-    	SUM(CASE WHEN [platform] = 'Spotify' THEN stream ELSE 0 END) AS ‘spotify_streams’,
-    	SUM(CASE WHEN [platform] = 'YouTube' THEN stream ELSE 0 END) AS ‘youtube_streams’
+   SELECT  
+   	[Track],
+    SUM(CASE WHEN [most_playedon] = 'Spotify' THEN [Stream] ELSE 0 END) AS 'spotify_streams',
+    SUM(CASE WHEN [most_playedon]= 'YouTube' THEN [Stream] ELSE 0 END) AS 'youtube_streams'
 FROM  
     [dbo].[spotify]
 GROUP BY  
-   [ track]
+   [Track]
 HAVING  
-    SUM(CASE WHEN [platform] = 'Spotify' THEN stream ELSE 0 END) > SUM(CASE WHEN [platform] = 'YouTube' THEN stream ELSE 0 END)
+    SUM(CASE WHEN [most_playedon] = 'Spotify' THEN [Stream] ELSE 0 END) > 
+	SUM(CASE WHEN [most_playedon]= 'YouTube' THEN [Stream] ELSE 0 END)
 ORDER BY  
     spotify_streams DESC;
 ```
@@ -163,22 +163,17 @@ ORDER BY
 -	Purpose: Discover tracks with higher liveness for live performance or immersive music recommendations.
 ```sql
 
-WITH AverageLiveness AS (
-    SELECT  
-        AVG(liveness) AS avg_liveness
-    FROM  
-        dbo.spotify
-)
 SELECT  
-    track,
-    artist,
-    liveness
+   [Track],
+   [Artist],
+   [Liveness]
 FROM  
-    dbo.spotify
+    [dbo].[spotify]
 WHERE  
-    liveness > (SELECT avg_liveness FROM AverageLiveness)
+    [Liveness] > (SELECT AVG([Liveness]) FROM [dbo].[spotify])
 ORDER BY  
-    liveness DESC;
+    [Liveness] DESC;
+
 ```
 # 13. Energy Value Range Calculation
 -	Query: Use a WITH clause to calculate the difference between the highest and lowest energy values for tracks in each album.
@@ -222,21 +217,19 @@ ORDER BY
     energy_to_liveness_ratio DESC;
 ```
 # 15. Cumulative Likes Analysis
--	Query: Calculate the cumulative sum of likes for tracks ordered by the number of views, using window functions.
+-	Query: Calculate the cumulative sum of likes for tracks ordered by the number of views
 -	Purpose: Track audience appreciation trends for popular tracks to guide future content strategies.
 ```sql
 SELECT  
-    track,
-    artist,
-    energy,
-    liveness,
-    (energy / NULLIF(liveness, 0)) AS energy_to_liveness_ratio
+    [Track],
+    [Artist],
+    [Views],
+    [Likes],
+    SUM(likes) OVER (ORDER BY views DESC) AS cumulative_likes
 FROM  
     dbo.spotify
-WHERE  
-    (energy / NULLIF(liveness, 0)) > 1.2
 ORDER BY  
-    energy_to_liveness_ratio DESC;
+     [Views] DESC;
 ```
 
 
