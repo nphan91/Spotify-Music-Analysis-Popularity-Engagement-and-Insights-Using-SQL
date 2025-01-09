@@ -1,5 +1,8 @@
 # Spotify Music Analysis: Popularity Engagement and Insights Using SQL
 ![Spotify Logo](https://github.com/nphan91/Spotify-Music-Analysis-Popularity-Engagement-and-Insights-Using-SQL/blob/main/Spotify%20Logo.png)
+
+## Overview and Purpose
+This project focuses on conducting a comprehensive analysis of music tracks, albums, and artist performance using data-driven insights. By leveraging SQL queries and analytics, the project aims to uncover patterns and trends in audience engagement, track popularity, and artist productivity. The results will guide marketing, playlist curation, and content strategies tailored to enhance user satisfaction and maximize platform success.
 ## SQL Queries
 ## Review data in the table
 ```sql
