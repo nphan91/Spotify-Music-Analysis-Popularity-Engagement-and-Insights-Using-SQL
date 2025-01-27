@@ -58,7 +58,7 @@ WHERE [licensed] = 'TRUE';
 ```
 # 4. Identifying Singles
 -	Query: Find all tracks that belong to the album type "single."
--	Purpose: Separate singles from albums for focused analysis on standalone track performance.
+-	Purpose: Separate singles from albums for focused analysis on track performance.
 ```sql
 SELECT  *
 FROM  [dbo]. [spotify]
