@@ -124,7 +124,7 @@ ORDER BY SUM([Views]) DESC;
 -	Query: Retrieve the track names that have been streamed on Spotify more than YouTube.
 -	Purpose: Compare platform-specific streaming performance to guide marketing and distribution strategies.
 ```sql
-   SELECT  
+SELECT  
    	[Track],
     SUM(CASE WHEN [most_playedon] = 'Spotify' THEN [Stream] ELSE 0 END) AS 'spotify_streams',
     SUM(CASE WHEN [most_playedon]= 'YouTube' THEN [Stream] ELSE 0 END) AS 'youtube_streams'
@@ -138,7 +138,7 @@ HAVING
 ORDER BY  
     spotify_streams DESC;
 ```
-#11. Artist-Specific Top Tracks
+# 11. Artist-Specific Top Tracks 
 -	Query: Find the top 3 most-viewed tracks for each artist using window functions.
 -	Purpose: Identify an artist's most successful tracks to prioritize in playlists or promotions.
 ```sql
